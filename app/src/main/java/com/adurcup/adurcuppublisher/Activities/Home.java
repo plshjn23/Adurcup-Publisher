@@ -77,6 +77,7 @@ public class Home extends AppCompatActivity {
     Date d = null;
     String gma;
     String imageFileName,typ="3";
+    String new_imagefilename;
     String  dt ;
     RequestQueue requestQueue;
 
@@ -348,6 +349,7 @@ public class Home extends AppCompatActivity {
         // Create an image file name
         String user123 = tv.getText().toString();
         imageFileName = "JPEG_" + d + "_" + "_" + "lat" + latitude + "_" + "long" + longitude + address_loc + "_" + user123 + "_" + "evening_bill";
+        new_imagefilename = d + user123 + "morning_evening";
         File storageDir = new File(strSDCardPathNamemorning);
         File image = File.createTempFile(imageFileName, /* prefix */
                 ".jpg", /* suffix */
@@ -381,6 +383,7 @@ public class Home extends AppCompatActivity {
         // Create an image file name
         String user123 = tv.getText().toString();
         imageFileName = "JPEG_" + d + "_" + "_" + "lat" + latitude + "_" + "long" + longitude + address_loc + "_" + user123 + "_" + "morning_bill";
+        new_imagefilename = d + user123 + "morning_bill";
         File storageDir = new File(strSDCardPathNamemorning);
         File image = File.createTempFile(imageFileName, /* prefix */
                 ".jpg", /* suffix */
@@ -634,7 +637,7 @@ public class Home extends AppCompatActivity {
 
 
         imageFileName = "JPEG_" + d + "_" + "_" + "lat" + latitude + "_" + "long" + longitude + address_loc + "_" + user123 + "_";
-
+        new_imagefilename = d + user123 +"normal_bill";
         File storageDir = new File(strSDCardPathName);
 
         File image = File.createTempFile(imageFileName, /* prefix */
@@ -1104,7 +1107,7 @@ public class Home extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> parameters = new HashMap<>();
-                    parameters.put("image_src", imageFileName);
+                    parameters.put("image_src", new_imagefilename);
                     parameters.put("type", typ);
                     parameters.put("time_stamp", dt);
                     parameters.put("location", address_loc);
