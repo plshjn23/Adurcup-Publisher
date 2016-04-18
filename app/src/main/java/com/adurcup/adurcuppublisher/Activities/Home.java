@@ -80,6 +80,7 @@ public class Home extends AppCompatActivity {
     String new_imagefilename;
     String  dt ;
     RequestQueue requestQueue;
+    String new_lat,new_long;
 
 
     static String Imagecredit = "http://api.adurcup.com/publisher/me/credits";
@@ -214,6 +215,8 @@ public class Home extends AppCompatActivity {
                 latitude = mGPSService.getLatitude();
                 longitude = mGPSService.getLongitude();
                 address_loc = mGPSService.getLocationAddress();
+                new_lat =  Double.toString(latitude);
+                new_long =  Double.toString(longitude);
             }
 
 
@@ -1111,6 +1114,9 @@ public class Home extends AppCompatActivity {
                     parameters.put("type", typ);
                     parameters.put("time_stamp", dt);
                     parameters.put("location", address_loc);
+                    parameters.put("latitude", new_lat);
+                    parameters.put("longitude", new_long);
+
 
 
                     return parameters;
