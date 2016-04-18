@@ -471,6 +471,7 @@ public class Home extends AppCompatActivity {
 
     private void getData() {
         loading = ProgressDialog.show(this, "Please wait...", "Fetching...", false, false);
+        loading.setCancelable(true);
         String url = Config.DATA_URL;
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
