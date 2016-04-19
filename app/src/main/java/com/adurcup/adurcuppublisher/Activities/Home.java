@@ -75,9 +75,8 @@ public class Home extends AppCompatActivity {
     private ProgressBar spinner;
     int photo_bill = 0;
     Date d = null;
-    String gma;
+    String gma,lime;
     String imageFileName,typ="3";
-    String new_imagefilename;
     String  dt ;
     RequestQueue requestQueue;
     String new_lat,new_long;
@@ -351,8 +350,8 @@ public class Home extends AppCompatActivity {
 
         // Create an image file name
         String user123 = tv.getText().toString();
-        imageFileName = "JPEG_" + d + "_" + "_" + "lat" + latitude + "_" + "long" + longitude + address_loc + "_" + user123 + "_" + "evening_bill";
-        new_imagefilename = d + user123 + "morning_evening";
+        imageFileName = d+"lat"+latitude+"lon"+longitude+address_loc+user123+"even";
+        Log.d("evening",imageFileName);
         File storageDir = new File(strSDCardPathNamemorning);
         File image = File.createTempFile(imageFileName, /* prefix */
                 ".jpg", /* suffix */
@@ -362,10 +361,15 @@ public class Home extends AppCompatActivity {
 
         );
 
-
+        Log.d("after evening",imageFileName);
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
+        Log.d("evening after after",imageFileName);
+        String example = mCurrentPhotoPath;
+        lime = (example.substring(example.lastIndexOf("/") + 1));
+        Log.d("new path new",lime);
         return image;
+
     }
 
 
@@ -385,8 +389,8 @@ public class Home extends AppCompatActivity {
 
         // Create an image file name
         String user123 = tv.getText().toString();
-        imageFileName = "JPEG_" + d + "_" + "_" + "lat" + latitude + "_" + "long" + longitude + address_loc + "_" + user123 + "_" + "morning_bill";
-        new_imagefilename = d + user123 + "morning_bill";
+        imageFileName = d+"lat"+latitude+"lon"+longitude+address_loc+user123+"morn";
+
         File storageDir = new File(strSDCardPathNamemorning);
         File image = File.createTempFile(imageFileName, /* prefix */
                 ".jpg", /* suffix */
@@ -397,7 +401,12 @@ public class Home extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
+        Log.d("new path",mCurrentPhotoPath);
+        String example = mCurrentPhotoPath;
+        lime = (example.substring(example.lastIndexOf("/") + 1));
+        Log.d("new path new",lime);
         return image;
+
     }
 
 
@@ -638,9 +647,8 @@ public class Home extends AppCompatActivity {
 
         String user123 = tv.getText().toString();
 
+        imageFileName = d+"lat"+latitude+"lon"+longitude+address_loc+user123;
 
-        imageFileName = "JPEG_" + d + "_" + "_" + "lat" + latitude + "_" + "long" + longitude + address_loc + "_" + user123 + "_";
-        new_imagefilename = d + user123 +"normal_bill";
         File storageDir = new File(strSDCardPathName);
 
         File image = File.createTempFile(imageFileName, /* prefix */
@@ -648,13 +656,16 @@ public class Home extends AppCompatActivity {
 
                 storageDir /* directory */
 
-
         );
 
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
+        String example = mCurrentPhotoPath;
+        lime = (example.substring(example.lastIndexOf("/") + 1));
+        Log.d("new path new",lime);
         return image;
+
     }
 
     public static boolean uploadFiletoServer(String strSDPath, String strUrlServer) {
@@ -1110,13 +1121,13 @@ public class Home extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> parameters = new HashMap<>();
-                    parameters.put("image_src", new_imagefilename);
+                    parameters.put("image_src", lime);
                     parameters.put("type", typ);
                     parameters.put("time_stamp", dt);
                     parameters.put("location", address_loc);
                     parameters.put("latitude", new_lat);
                     parameters.put("longitude", new_long);
-
+                    Log.d("Volley" , lime);
 
 
                     return parameters;
