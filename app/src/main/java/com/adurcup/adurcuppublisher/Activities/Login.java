@@ -3,6 +3,7 @@ package com.adurcup.adurcuppublisher.Activities;
 /**
  * Created by om on 4/17/2016.
  */
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ import java.util.Map;
 /**
  * Created by kshivang on 08/04/16.
  */
-public class Login extends AppCompatActivity {
+public class Login extends Activity {
 
     TextView registerLink;
     EditText mobile, password;

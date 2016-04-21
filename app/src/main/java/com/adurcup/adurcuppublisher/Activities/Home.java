@@ -3,6 +3,7 @@ package com.adurcup.adurcuppublisher.Activities;
 /**
  * Created by om on 4/17/2016.
  */
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -57,7 +58,7 @@ import java.util.Map;
 /**
  * Created by kshivang on 08/04/16.
  */
-public class Home extends AppCompatActivity {
+public class Home extends Activity {
     UserLocalStore userLocalStore;
     final Context context = this;
     // flag for Internet connection status

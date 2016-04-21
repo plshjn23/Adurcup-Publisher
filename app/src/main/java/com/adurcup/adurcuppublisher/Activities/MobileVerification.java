@@ -3,6 +3,7 @@ package com.adurcup.adurcuppublisher.Activities;
 /**
  * Created by om on 4/17/2016.
  */
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -46,7 +47,7 @@ import java.util.Map;
 /**
  * Created by kshivang on 08/04/16.
  */
-public class MobileVerification extends AppCompatActivity {
+public class MobileVerification extends Activity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

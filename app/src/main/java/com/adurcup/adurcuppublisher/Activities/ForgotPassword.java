@@ -3,6 +3,7 @@ package com.adurcup.adurcuppublisher.Activities;
 /**
  * Created by om on 4/17/2016.
  */
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,7 +38,7 @@ import java.util.Map;
 /**
  * Created by kshivang on 08/04/16.
  */
-public class ForgotPassword extends AppCompatActivity {
+public class ForgotPassword extends Activity {
 
     String mobileNo, pwd;
     RelativeLayout layout;

@@ -3,6 +3,7 @@ package com.adurcup.adurcuppublisher.Activities;
 /**
  * Created by om on 4/17/2016.
  */
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ import java.net.URL;
 /**
  * Created by kshivang on 08/04/16.
  */
-public class OtpVerification extends AppCompatActivity {
+public class OtpVerification extends Activity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
