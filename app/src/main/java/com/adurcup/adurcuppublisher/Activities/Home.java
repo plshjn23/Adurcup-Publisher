@@ -66,44 +66,31 @@ public class Home extends Activity {
     final Context context = this;
     // flag for Internet connection status
     Boolean isInternetPresent = false;
-
     // Connection detector class
     ConnectionDetector cd;
 
     ImageView imgView, cameramorning, cameraevening;
     static final int REQUEST_TAKE_PHOTO = 1;
-    String mCurrentPhotoPath, address_loc = "null";
     double latitude, longitude;
     TextView tvupload, tvv, tvcredit, tv, tv_morning, tv_evening;
     private ProgressDialog loading;
     private ProgressBar spinner;
     int photo_bill = 0;
     Date d = null;
-    String gma,lime;
-    String imageFileName,typ="3";
-    String dt;
+    String gma,lime,imageFileName,typ="3",dt,new_lat,new_long,split_one,id = "1",upload_date,current_date,mCurrentPhotoPath, address_loc = "null";
     RequestQueue requestQueue;
-    String new_lat,new_long;
-    String split_one;
-    String id = "1";
     Cursor c;
     int new_button = 0;
-    String upload_date,current_date;
-
     static String Imagecredit = "http://api.adurcup.com/publisher/me/credits";
     static String Imageuploadurl = "http://api.adurcup.com/publisher/me/images";
     static String strSDCardPathName = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     static String strURLUpload = "http://www.learnhtml.provisor.in/android/uploadFile.php";
-
     static String strSDCardPathNamemorning = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     static String strURLUploadmorning = "http://www.learnhtml.provisor.in/android/uploadFilemorning.php";
-
     static String strSDCardPathNameevening = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     static String strURLUploadevening = "http://www.learnhtml.provisor.in/android/uploadFileevening.php";
     DBAdapter db = new DBAdapter(Home.this);
-
-String timeStamp;
-
+  //  DBAdapterevening db1 = new DBAdapterevening(Home.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,10 +102,7 @@ String timeStamp;
         tvv = (TextView)findViewById(R.id.tvv);
         tvupload = (TextView)findViewById(R.id.uploadingtask);
         userLocalStore = new UserLocalStore(this);
-
         User user = userLocalStore.getLoggedInUser();
-
-        timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Demo");
         query2.getInBackground("QNGkwKjpjt", new GetCallback<ParseObject>() {
             public void done(ParseObject gameScore, ParseException e) {
@@ -135,8 +119,6 @@ String timeStamp;
                                         d = object.getUpdatedAt();
                                     }
                                     if (d != null) {
-//     Toast.makeText(getApplicationContext(), d.toString(), Toast.LENGTH_LONG).show();
-
                                         dt = d.toLocaleString();
                                         Log.d("timestamp", dt);
                                         String[] splited = dt.split("\\s+");
@@ -177,23 +159,16 @@ String timeStamp;
 
         isInternetPresent = cd.isConnectingToInternet();
 
-        // check for Internet status
         if (isInternetPresent) {
             // Internet Connection is Present
             // make HTTP requests
-            //  getData();
-            //   new getData(Home.this).execute();
+            new GetCredits().execute();
         } else {
             // Internet connection is not present
             // Ask user to connect to Internet
-
-            cameramorning.setVisibility(View.GONE);
-            cameraevening.setVisibility(View.GONE);
-            Toast.makeText(Home.this, "No Internet Connection, Please enable your internet connection", Toast.LENGTH_LONG).show();
-
+            Toast.makeText(getBaseContext(), "No Internet Connection.Please Check Your Internet Connection", Toast.LENGTH_LONG).show();
 
         }
-
 
         // Permission StrictMode
         if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -216,11 +191,9 @@ String timeStamp;
             mGPSService.getLocation();
 
             if (mGPSService.isLocationAvailable == false) {
-
                 // Here you can ask the user to try again, using return; for that
                 Toast.makeText(Home.this, "Your location is not available, please try again.", Toast.LENGTH_SHORT).show();
                 return;
-
                 // Or you can continue without getting the location, remove the return; above and uncomment the line given below
                 // address = "Location not available";
             } else {
@@ -517,6 +490,7 @@ String timeStamp;
                     // Internet Connection is Present
                     // make HTTP requests
                     new UploadAsync(Home.this).execute();
+
                 } else {
                     // Internet connection is not present
                     // Ask user to connect to Internet
@@ -1199,17 +1173,6 @@ String timeStamp;
 
     }
     public class GetCredits extends AsyncTask<Void, Void, Void> {
-
-
-
-
-
-
-
-
-
-
-
         @Override
         protected Void doInBackground(Void... params) {
 
@@ -1225,10 +1188,6 @@ String timeStamp;
                             String  str = example.substring(0, example.length() - 1);
                             tvv.setText(str);
                         }
-
-
-
-
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
@@ -1236,10 +1195,6 @@ String timeStamp;
 
                         }
                     }) {
-
-
-
-
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<>();
@@ -1262,125 +1217,4 @@ String timeStamp;
         }
     }
 
-    public class getData extends AsyncTask<String, Void, Void> {
-
-
-
-        // ProgressDialog
-        //  private ProgressDialog mProgressDialog;
-
-
-        public getData(Home activity) {
-
-            loading = new ProgressDialog(activity);
-            loading.setMessage("Fetching Data please wait.....");
-            loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            loading.setCancelable(false);
-
-
-        }
-
-
-        protected void onPreExecute() {
-
-            super.onPreExecute();
-
-
-            loading.show();
-
-        }
-
-
-        @Override
-
-        protected Void doInBackground(String... par) {
-
-
-            String url = Config.DATA_URL;
-            StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-
-                    showJSON(response);
-                }
-
-                private void showJSON(String response) {
-                    String name = "";
-                    String address = "";
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        JSONArray result = jsonObject.getJSONArray(Config.JSON_ARRAY);
-                        JSONObject collegeData = result.getJSONObject(0);
-                        name = collegeData.getString(Config.KEY_NAME);
-                        address = collegeData.getString(Config.KEY_ADDRESS);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    int y_morning = Integer.parseInt(name);
-
-                    int y_evening = Integer.parseInt(address);
-
-                    if (y_morning == 0) {
-
-                        cameramorning.setVisibility(View.GONE);
-                        tv_morning.setVisibility(View.VISIBLE);
-
-
-                    }
-                    else if (y_morning == 1) {
-                        cameramorning.setVisibility(View.VISIBLE);
-                        tv_morning.setVisibility(View.GONE);
-                        tvupload.setText("Upload morning bill image");
-                    }
-
-                    if (y_evening == 0) {
-
-                        cameraevening.setVisibility(View.GONE);
-                        tv_evening.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        cameraevening.setVisibility(View.VISIBLE);
-                        tv_evening.setVisibility(View.GONE);
-                        tvupload.setText("Upload evening bill image");
-                    }
-                    new GetCredits().execute();
-                }
-            },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(Home.this, "Please check you net connection it's not working.", Toast.LENGTH_LONG).show();
-                            cameramorning.setVisibility(View.GONE);
-                            cameraevening.setVisibility(View.GONE);
-                            loading.dismiss();
-                        }
-                    });
-
-            RequestQueue requestQueue = Volley.newRequestQueue(Home.this);
-
-            requestQueue.add(stringRequest);
-            return null;
-        }
-
-
-        protected void onPostExecute(Void unused) {
-
-
-
-            isInternetPresent = cd.isConnectingToInternet();
-
-            // check for Internet status
-            if (isInternetPresent) {
-                loading.dismiss();
-            } else {
-                Toast.makeText(getBaseContext(), "No internet connection", Toast.LENGTH_LONG).show();
-            }
-
-
-        }
-
-
-    }
 }
