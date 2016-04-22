@@ -4,7 +4,6 @@ package com.adurcup.adurcuppublisher.Activities;
  * Created by om on 4/17/2016.
  */
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,12 +13,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,7 +39,6 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
@@ -57,29 +52,22 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * Created by kshivang on 08/04/16.
- */
 public class Home extends Activity {
     UserLocalStore userLocalStore;
-    final Context context = this;
     // flag for Internet connection status
     Boolean isInternetPresent = false;
     // Connection detector class
     ConnectionDetector cd;
-
     ImageView imgView, cameramorning, cameraevening;
     static final int REQUEST_TAKE_PHOTO = 1;
     double latitude, longitude;
     TextView tvupload, tvv, tvcredit, tv, tv_morning, tv_evening;
-    private ProgressDialog loading;
     private ProgressBar spinner;
     int photo_bill = 0;
     Date d = null;
-    String gma,lime,imageFileName,typ="3",dt,new_lat,new_long,split_one,id = "1",upload_date,current_date,mCurrentPhotoPath, address_loc = "null";
+    String gma,lime,imageFileName,typ="3",dt,new_lat,new_long,split_one,id = "1",upload_date,current_date,upload_dateevening,current_dateevening,mCurrentPhotoPath, address_loc = "null";
     RequestQueue requestQueue;
-    Cursor c;
+    Cursor c,c1;
     int new_button = 0;
     static String Imagecredit = "http://api.adurcup.com/publisher/me/credits";
     static String Imageuploadurl = "http://api.adurcup.com/publisher/me/images";
@@ -90,13 +78,15 @@ public class Home extends Activity {
     static String strSDCardPathNameevening = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     static String strURLUploadevening = "http://www.learnhtml.provisor.in/android/uploadFileevening.php";
     DBAdapter db = new DBAdapter(Home.this);
-  //  DBAdapterevening db1 = new DBAdapterevening(Home.this);
+   DBAdapterevening db1 = new DBAdapterevening(Home.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         cameramorning = (ImageView) findViewById(R.id.morning_button);
+        cameramorning.setVisibility(View.GONE);
         cameraevening = (ImageView) findViewById(R.id.imageViewevening);
+        cameraevening.setVisibility(View.GONE);
         tv_morning = (TextView) findViewById(R.id.tvmorning);
         tv_evening = (TextView) findViewById(R.id.textView);
         tvv = (TextView)findViewById(R.id.tvv);
@@ -127,8 +117,8 @@ public class Home extends Activity {
 
                                         Log.d("Splited_String", split_one);
                                         dbmethod();
+                                        dbmethodevening();
                                         return;
-
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                                     }
@@ -330,6 +320,66 @@ public class Home extends Activity {
 
         });
 
+    }
+
+    private void dbmethodevening() {
+
+        db1.open();
+        c1 = db1.getContactevening(Integer.parseInt
+                (id));
+        if (c1.moveToFirst()) {
+            DisplayContactevening(c1);
+        }
+        else {
+            Toast.makeText(getBaseContext(), "No contact found",
+                    Toast.LENGTH_LONG).show();
+
+            //---Insert Contact---
+            String date1 = "0";
+            db1.open();
+            db1.insertContactevening(date1,split_one);
+            db1.close();
+            Toast.makeText(getBaseContext(), "Inserted",
+                    Toast.LENGTH_SHORT).show();
+            Log.d("update date evening", date1);
+            Log.d("current date evening", split_one);
+
+            db.close();
+
+        }
+
+        db1.open();
+        if (db1.updateContactevening
+                (Integer.parseInt(id), split_one)){
+
+            Toast.makeText(getBaseContext(), "Update successful.", Toast.LENGTH_LONG).show();}
+        else{
+            Toast.makeText(getBaseContext(), "Update failed.",
+                    Toast.LENGTH_LONG).show();}
+        db1.close();
+
+
+        db1.open();
+        c1 = db1.getContactevening(Integer.parseInt
+                (id));
+        if (c1.moveToFirst()) {
+            DisplayContactevening(c1);
+        }
+
+
+
+        if(current_dateevening.equals(upload_dateevening)){
+            cameraevening.setVisibility(View.GONE);
+            Log.d("campare123evening",current_dateevening);
+            Log.d("campare2evening",upload_dateevening);
+
+
+        }
+        else{
+            cameraevening.setVisibility(View.VISIBLE);
+            Log.d("campareevening",current_dateevening);
+            Log.d("campare2evening", upload_dateevening);
+        }
     }
 
     private void dbmethod() {
@@ -555,21 +605,7 @@ public class Home extends Activity {
     // Upload Image in Background
     public class UploadAsync extends AsyncTask<String, Void, Void> {
 
-
-        // ProgressDialog
-        //  private ProgressDialog mProgressDialog;
-
-
         public UploadAsync(Home activity) {
-
-            //    mProgressDialog = new ProgressDialog(activity);
-
-            // mProgressDialog.setMessage("Uploading please wait.....");
-
-            //          mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-            //        mProgressDialog.setCancelable(false);
-
 
         }
 
@@ -577,8 +613,6 @@ public class Home extends Activity {
         protected void onPreExecute() {
 
             super.onPreExecute();
-
-            //  mProgressDialog.show();
 
             spinner.setVisibility(View.VISIBLE);
 
@@ -625,73 +659,44 @@ public class Home extends Activity {
 
             // check for Internet status
             if (isInternetPresent) {
-
-                //   mProgressDialog.dismiss();
                 spinner.setVisibility(View.GONE);
                 new ImageUpload().execute();
-
-
-
             } else {
                 Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_LONG).show();
                 spinner.setVisibility(View.GONE);
             }
-
-
         }
-
-
     }
 
 
     private File createImageFile() throws IOException {
 
         // Create an image file name
-
-
         String user123 = tv.getText().toString();
-
         imageFileName = d+"lat"+latitude+"lon"+longitude+address_loc+user123;
-
         File storageDir = new File(strSDCardPathName);
-
         File image = File.createTempFile(imageFileName, /* prefix */
                 ".jpg", /* suffix */
-
                 storageDir /* directory */
-
         );
-
-
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         String example = mCurrentPhotoPath;
         lime = (example.substring(example.lastIndexOf("/") + 1));
         Log.d("new path new",lime);
         return image;
-
     }
 
     public static boolean uploadFiletoServer(String strSDPath, String strUrlServer) {
-
         int bytesRead, bytesAvailable, bufferSize;
-
         byte[] buffer;
-
         int maxBufferSize = 1 * 1024 * 1024;
-
         int resCode = 0;
-
         String resMessage = "";
-
         String lineEnd = "\r\n";
-
         String twoHyphens = "--";
-
         String boundary = "*****";
-
         try {
-
             File file = new File(strSDPath);
             if (!file.exists()) {
                 return false;
@@ -707,8 +712,7 @@ public class Home extends Activity {
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
             DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes(
-                    "Content-Disposition: form-data; name=\"filUpload\";filename=\"" + strSDPath + "\"" + lineEnd);
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"filUpload\";filename=\"" + strSDPath + "\"" + lineEnd);
             outputStream.writeBytes(lineEnd);
             bytesAvailable = fileInputStream.available();
             bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -768,34 +772,12 @@ public class Home extends Activity {
     }
 
     public class UploadAsyncmorning extends AsyncTask<String, Void, Void> {
-
-
-        // ProgressDialog
-        //  private ProgressDialog mProgressDialog;
-
-
         public UploadAsyncmorning(Home activity) {
-
-            //    mProgressDialog = new ProgressDialog(activity);
-            //    mProgressDialog.setMessage("Uploading please wait.....");
-            //    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            //    mProgressDialog.setCancelable(false);
-
         }
-
-
         protected void onPreExecute() {
-
             super.onPreExecute();
-
-            //  mProgressDialog.show();
-
             spinner.setVisibility(View.VISIBLE);
-
-
         }
-
-
         @Override
         protected Void doInBackground(String... par) {
             // *** Upload all file to Server
@@ -805,85 +787,50 @@ public class Home extends Activity {
                 if (sfil.isFile()) {
                     uploadFiletoServermorning(sfil.getAbsolutePath(), strURLUploadmorning);
                 }
-
             }
-
-
             //*** Clear Folder
-
             clearFoldermorning();
-
-
             return null;
-
         }
 
-
         protected void onPostExecute(Void unused) {
-
-
             isInternetPresent = cd.isConnectingToInternet();
-
             // check for Internet status
             if (isInternetPresent) {
-
-                //   mProgressDialog.dismiss();
-                spinner.setVisibility(View.GONE);
                 new ImageUpload().execute();
                 visibilityofbutton();
-
+                spinner.setVisibility(View.GONE);
             } else {
                 Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_LONG).show();
                 spinner.setVisibility(View.GONE);
             }
-
-
         }
-
         private void visibilityofbutton() {
-
             db.open();
             if (db.updateContact1
                     (Integer.parseInt(id), split_one))
-
                 Toast.makeText(getBaseContext(), "Update successful.", Toast.LENGTH_LONG).show();
-            // Log.d("curent date after upload",);
             db.open();
-            c = db.getContact(Integer.parseInt
-                    (id));
-            if (c.moveToFirst())
-                DisplayContact(c);
-            else
-                Toast.makeText(getBaseContext(), "Update failed.",
-                        Toast.LENGTH_LONG).show();
+            c = db.getContact(Integer.parseInt(id));
+            if (c.moveToFirst()){
+                DisplayContact(c);}
+            else{
+                Toast.makeText(getBaseContext(), "Update failed.", Toast.LENGTH_LONG).show();}
             db.close();
             cameramorning.setVisibility(View.GONE);
-
         }
-
-
     }
 
     public static boolean uploadFiletoServermorning(String strSDPath, String strUrlServer) {
-
         int bytesRead, bytesAvailable, bufferSize;
-
         byte[] buffer;
-
         int maxBufferSize = 1 * 1024 * 1024;
-
         int resCode = 0;
-
         String resMessage = "";
-
         String lineEnd = "\r\n";
-
         String twoHyphens = "--";
-
         String boundary = "*****";
-
         try {
-
             File file = new File(strSDPath);
             if (!file.exists()) {
                 return false;
@@ -899,8 +846,7 @@ public class Home extends Activity {
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
             DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes(
-                    "Content-Disposition: form-data; name=\"filUpload\";filename=\"" + strSDPath + "\"" + lineEnd);
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"filUpload\";filename=\"" + strSDPath + "\"" + lineEnd);
             outputStream.writeBytes(lineEnd);
             bytesAvailable = fileInputStream.available();
             bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -939,30 +885,13 @@ public class Home extends Activity {
     }
 
     public class UploadAsyncevening extends AsyncTask<String, Void, Void> {
-        // ProgressDialog
-        //  private ProgressDialog mProgressDialog;
         public UploadAsyncevening(Home activity) {
-
-            // mProgressDialog = new ProgressDialog(activity);
-            // mProgressDialog.setMessage("Uploading please wait.....");
-            // mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            // mProgressDialog.setCancelable(false);
         }
-
         protected void onPreExecute() {
-
             super.onPreExecute();
-
-            //  mProgressDialog.show();
-
             spinner.setVisibility(View.VISIBLE);
-
-
         }
-
-
         @Override
-
         protected Void doInBackground(String... par) {
             // *** Upload all file to Server
             File file = new File(strSDCardPathNameevening);
@@ -972,58 +901,64 @@ public class Home extends Activity {
                     uploadFiletoServerevening(sfil.getAbsolutePath(), strURLUploadevening);
                 }
             }
-
-
             //*** Clear Folder
-
             clearFolderevening();
-
-
             return null;
-
         }
-
-
         protected void onPostExecute(Void unused) {
-
-
             isInternetPresent = cd.isConnectingToInternet();
-
             // check for Internet status
             if (isInternetPresent) {
                 new ImageUpload().execute();
                 //   mProgressDialog.dismiss();
+                visibilityofbuttonevening();
                 spinner.setVisibility(View.GONE);
-
             } else {
                 Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_LONG).show();
                 spinner.setVisibility(View.GONE);
             }
-
         }
+
+
 
     }
 
+    private void visibilityofbuttonevening() {
+        db1.open();
+        if (db1.updateContact1evening(Integer.parseInt(id), split_one))
+            Toast.makeText(getBaseContext(), "Update successful.", Toast.LENGTH_LONG).show();
+        db1.open();
+        c1 = db1.getContactevening(Integer.parseInt
+                (id));
+        if (c1.moveToFirst())
+            DisplayContactevening(c1);
+        else
+            Toast.makeText(getBaseContext(), "Update failed.",
+                    Toast.LENGTH_LONG).show();
+        db1.close();
+        cameraevening.setVisibility(View.GONE);
+    }
+
+    private void DisplayContactevening(Cursor c1) {
+        Toast.makeText(getBaseContext(),"id: " + c1.getString(0) + "\n" +"Uploading Date Evening: " + c1.getString(1) + "\n" + "Current Date evening: " + c1.getString(2), Toast.LENGTH_LONG).show();
+        upload_dateevening = c1.getString(1);
+        current_dateevening = c1.getString(2);
+        Log.d("upload_evening",upload_date);
+        Log.d("current_evening",current_date);
+        cameraevening.setVisibility(View.GONE);
+    }
+
+
     public static boolean uploadFiletoServerevening(String strSDPath, String strUrlServer) {
-
         int bytesRead, bytesAvailable, bufferSize;
-
         byte[] buffer;
-
         int maxBufferSize = 1 * 1024 * 1024;
-
         int resCode = 0;
-
         String resMessage = "";
-
         String lineEnd = "\r\n";
-
         String twoHyphens = "--";
-
         String boundary = "*****";
-
         try {
-
             File file = new File(strSDPath);
             if (!file.exists()) {
                 return false;
@@ -1039,8 +974,7 @@ public class Home extends Activity {
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
             DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes(
-                    "Content-Disposition: form-data; name=\"filUpload\";filename=\"" + strSDPath + "\"" + lineEnd);
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"filUpload\";filename=\"" + strSDPath + "\"" + lineEnd);
             outputStream.writeBytes(lineEnd);
             bytesAvailable = fileInputStream.available();
             bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -1087,15 +1021,10 @@ public class Home extends Activity {
             }
         }
     }
-
     public class ImageUpload extends AsyncTask<Void, Void, Void> {
-
-
         @Override
         protected Void doInBackground(Void... params) {
-
             requestQueue = Volley.newRequestQueue(getApplicationContext());
-
             StringRequest request = new StringRequest(Request.Method.POST, Imageuploadurl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -1132,8 +1061,6 @@ public class Home extends Activity {
 
                 }
             }) {
-
-
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<>();
@@ -1141,8 +1068,6 @@ public class Home extends Activity {
                     headers.put("Authorization", gma);
                     return headers;
                 }
-
-
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> parameters = new HashMap<>();
@@ -1153,25 +1078,19 @@ public class Home extends Activity {
                     parameters.put("latitude", new_lat);
                     parameters.put("longitude", new_long);
                     Log.d("Volley" , lime);
-
-
                     return parameters;
                 }
             };
-
             request.setShouldCache(false);
             requestQueue.add(request);
-
             return null;
         }
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
         }
-
-
     }
+
     public class GetCredits extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
