@@ -7,12 +7,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -78,10 +81,14 @@ public class Home extends Activity {
     Date d = null;
     String gma,lime;
     String imageFileName,typ="3";
-    String  dt ;
+    String dt;
     RequestQueue requestQueue;
     String new_lat,new_long;
-
+    String split_one;
+    String id = "1";
+    Cursor c;
+    int new_button = 0;
+    String upload_date,current_date;
 
     static String Imagecredit = "http://api.adurcup.com/publisher/me/credits";
     static String Imageuploadurl = "http://api.adurcup.com/publisher/me/images";
@@ -93,9 +100,9 @@ public class Home extends Activity {
 
     static String strSDCardPathNameevening = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     static String strURLUploadevening = "http://www.learnhtml.provisor.in/android/uploadFileevening.php";
+    DBAdapter db = new DBAdapter(Home.this);
 
-
-
+String timeStamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +118,7 @@ public class Home extends Activity {
 
         User user = userLocalStore.getLoggedInUser();
 
-
+        timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Demo");
         query2.getInBackground("QNGkwKjpjt", new GetCallback<ParseObject>() {
             public void done(ParseObject gameScore, ParseException e) {
@@ -131,6 +138,13 @@ public class Home extends Activity {
 //     Toast.makeText(getApplicationContext(), d.toString(), Toast.LENGTH_LONG).show();
 
                                         dt = d.toLocaleString();
+                                        Log.d("timestamp", dt);
+                                        String[] splited = dt.split("\\s+");
+
+                                        split_one=splited[0];
+
+                                        Log.d("Splited_String", split_one);
+                                        dbmethod();
                                         return;
 
                                     } else {
@@ -151,8 +165,6 @@ public class Home extends Activity {
         gma = user.apiKey;
         Log.d("hello", gma);
         tv.setVisibility(View.GONE);
-
-
         // creating connection detector class instance
         cd = new ConnectionDetector(getApplicationContext());
 
@@ -162,13 +174,15 @@ public class Home extends Activity {
         spinner.setVisibility(View.GONE);
 
 
+
         isInternetPresent = cd.isConnectingToInternet();
 
         // check for Internet status
         if (isInternetPresent) {
             // Internet Connection is Present
             // make HTTP requests
-            getData();
+            //  getData();
+            //   new getData(Home.this).execute();
         } else {
             // Internet connection is not present
             // Ask user to connect to Internet
@@ -229,6 +243,7 @@ public class Home extends Activity {
             Toast.makeText(getBaseContext(), "No Internet Connection.Please Check Your Internet Connection", Toast.LENGTH_LONG).show();
 
         }
+
 
 
         cameraevening.setOnClickListener(new View.OnClickListener() {
@@ -344,7 +359,84 @@ public class Home extends Activity {
 
     }
 
+    private void dbmethod() {
 
+        db.open();
+        c = db.getContact(Integer.parseInt
+                (id));
+        if (c.moveToFirst()) {
+            DisplayContact(c);
+        }
+        else {
+            Toast.makeText(getBaseContext(), "No contact found",
+                    Toast.LENGTH_LONG).show();
+
+            //---Insert Contact---
+            String date = "0";
+            db.open();
+            db.insertContact(date,split_one);
+            db.close();
+            Toast.makeText(getBaseContext(), "Inserted",
+                    Toast.LENGTH_SHORT).show();
+            Log.d("update time", date);
+            Log.d("current date", split_one);
+
+            db.close();
+
+        }
+
+        db.open();
+        if (db.updateContact
+                (Integer.parseInt(id), split_one)){
+
+            Toast.makeText(getBaseContext(), "Update successful.", Toast.LENGTH_LONG).show();}
+        else{
+            Toast.makeText(getBaseContext(), "Update failed.",
+                    Toast.LENGTH_LONG).show();}
+        db.close();
+
+
+        db.open();
+        c = db.getContact(Integer.parseInt
+                (id));
+        if (c.moveToFirst()) {
+            DisplayContact(c);
+        }
+
+
+
+        if(current_date.equals(upload_date)){
+            cameramorning.setVisibility(View.GONE);
+            Log.d("campare123",current_date);
+            Log.d("campare2",upload_date);
+
+
+        }
+        else{
+            cameramorning.setVisibility(View.VISIBLE);
+            Log.d("campare",current_date);
+            Log.d("campare2", upload_date);
+        }
+    }
+
+    private void DisplayContact(Cursor c) {
+        // TODO Auto-generated method stub
+        Toast.makeText(getBaseContext(),"id: " + c.getString(0) +
+                        "\n" +"Uploading Date: " + c.getString(1) + "\n" +
+                        "Current Date: " + c.getString(2),
+                Toast.LENGTH_LONG).show();
+        upload_date = c.getString(1);
+        current_date = c.getString(2);
+        Log.d("upload",upload_date);
+        Log.d("current",current_date);
+        new_button = 1;
+
+        if(new_button == 1){
+            cameramorning.setVisibility(View.GONE);
+        }
+
+
+    }
 
 
     private File createImageFileevening() throws IOException {
@@ -485,69 +577,6 @@ public class Home extends Activity {
     }
 
 
-    private void getData() {
-        loading = ProgressDialog.show(this, "Please wait...", "Fetching...", false, false);
-        loading.setCancelable(true);
-        String url = Config.DATA_URL;
-        StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                loading.dismiss();
-                showJSON(response);
-            }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Home.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
-    private void showJSON(String response) {
-        String name = "";
-        String address = "";
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            JSONArray result = jsonObject.getJSONArray(Config.JSON_ARRAY);
-            JSONObject collegeData = result.getJSONObject(0);
-            name = collegeData.getString(Config.KEY_NAME);
-            address = collegeData.getString(Config.KEY_ADDRESS);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        int y_morning = Integer.parseInt(name);
-
-
-        int y_evening = Integer.parseInt(address);
-        if (y_morning == 0) {
-
-            cameramorning.setVisibility(View.GONE);
-            tv_morning.setVisibility(View.VISIBLE);
-
-
-        } else if (y_morning == 1) {
-            cameramorning.setVisibility(View.VISIBLE);
-            tv_morning.setVisibility(View.GONE);
-            tvupload.setText("Upload morning bill image");
-        }
-
-        if (y_evening == 0) {
-
-            cameraevening.setVisibility(View.GONE);
-            tv_evening.setVisibility(View.VISIBLE);
-        } else {
-            cameraevening.setVisibility(View.VISIBLE);
-            tv_evening.setVisibility(View.GONE);
-            tvupload.setText("Upload evening bill image");
-        }
-        new GetCredits().execute();
-    }
 
     // Upload Image in Background
     public class UploadAsync extends AsyncTask<String, Void, Void> {
@@ -827,13 +856,34 @@ public class Home extends Activity {
                 //   mProgressDialog.dismiss();
                 spinner.setVisibility(View.GONE);
                 new ImageUpload().execute();
-
+                visibilityofbutton();
 
             } else {
                 Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_LONG).show();
                 spinner.setVisibility(View.GONE);
             }
 
+
+        }
+
+        private void visibilityofbutton() {
+
+            db.open();
+            if (db.updateContact1
+                    (Integer.parseInt(id), split_one))
+
+                Toast.makeText(getBaseContext(), "Update successful.", Toast.LENGTH_LONG).show();
+            // Log.d("curent date after upload",);
+            db.open();
+            c = db.getContact(Integer.parseInt
+                    (id));
+            if (c.moveToFirst())
+                DisplayContact(c);
+            else
+                Toast.makeText(getBaseContext(), "Update failed.",
+                        Toast.LENGTH_LONG).show();
+            db.close();
+            cameramorning.setVisibility(View.GONE);
 
         }
 
@@ -1182,7 +1232,7 @@ public class Home extends Activity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(Home.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(Home.this, "Internet is not working properly Please try again later.", Toast.LENGTH_LONG).show();
 
                         }
                     }) {
@@ -1193,7 +1243,7 @@ public class Home extends Activity {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> headers = new HashMap<>();
-                    Log.d("hello_",gma);
+                    Log.d("hello_", gma);
                     headers.put("Authorization", gma);
                     return headers;
                 }
@@ -1212,4 +1262,125 @@ public class Home extends Activity {
         }
     }
 
+    public class getData extends AsyncTask<String, Void, Void> {
+
+
+
+        // ProgressDialog
+        //  private ProgressDialog mProgressDialog;
+
+
+        public getData(Home activity) {
+
+            loading = new ProgressDialog(activity);
+            loading.setMessage("Fetching Data please wait.....");
+            loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            loading.setCancelable(false);
+
+
+        }
+
+
+        protected void onPreExecute() {
+
+            super.onPreExecute();
+
+
+            loading.show();
+
+        }
+
+
+        @Override
+
+        protected Void doInBackground(String... par) {
+
+
+            String url = Config.DATA_URL;
+            StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    showJSON(response);
+                }
+
+                private void showJSON(String response) {
+                    String name = "";
+                    String address = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONArray result = jsonObject.getJSONArray(Config.JSON_ARRAY);
+                        JSONObject collegeData = result.getJSONObject(0);
+                        name = collegeData.getString(Config.KEY_NAME);
+                        address = collegeData.getString(Config.KEY_ADDRESS);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    int y_morning = Integer.parseInt(name);
+
+                    int y_evening = Integer.parseInt(address);
+
+                    if (y_morning == 0) {
+
+                        cameramorning.setVisibility(View.GONE);
+                        tv_morning.setVisibility(View.VISIBLE);
+
+
+                    }
+                    else if (y_morning == 1) {
+                        cameramorning.setVisibility(View.VISIBLE);
+                        tv_morning.setVisibility(View.GONE);
+                        tvupload.setText("Upload morning bill image");
+                    }
+
+                    if (y_evening == 0) {
+
+                        cameraevening.setVisibility(View.GONE);
+                        tv_evening.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        cameraevening.setVisibility(View.VISIBLE);
+                        tv_evening.setVisibility(View.GONE);
+                        tvupload.setText("Upload evening bill image");
+                    }
+                    new GetCredits().execute();
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(Home.this, "Please check you net connection it's not working.", Toast.LENGTH_LONG).show();
+                            cameramorning.setVisibility(View.GONE);
+                            cameraevening.setVisibility(View.GONE);
+                            loading.dismiss();
+                        }
+                    });
+
+            RequestQueue requestQueue = Volley.newRequestQueue(Home.this);
+
+            requestQueue.add(stringRequest);
+            return null;
+        }
+
+
+        protected void onPostExecute(Void unused) {
+
+
+
+            isInternetPresent = cd.isConnectingToInternet();
+
+            // check for Internet status
+            if (isInternetPresent) {
+                loading.dismiss();
+            } else {
+                Toast.makeText(getBaseContext(), "No internet connection", Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+
+
+    }
 }
