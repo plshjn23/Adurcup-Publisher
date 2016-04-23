@@ -62,7 +62,7 @@ public class Home extends Activity {
     static final int REQUEST_TAKE_PHOTO = 1;
     double latitude, longitude;
     TextView tvupload, tvv, tvcredit, tv, tv_morning, tv_evening;
-    private ProgressBar spinner;
+    private ProgressBar spinner,spinnermorning,spinnerevening;
     int photo_bill = 0;
     Date d = null;
     String gma,lime,imageFileName,typ="3",dt,new_lat,new_long,split_one,id = "1",upload_date,current_date,upload_dateevening,current_dateevening,mCurrentPhotoPath, address_loc = "null";
@@ -78,7 +78,7 @@ public class Home extends Activity {
     static String strSDCardPathNameevening = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     static String strURLUploadevening = "http://www.learnhtml.provisor.in/android/uploadFileevening.php";
     DBAdapter db = new DBAdapter(Home.this);
-   DBAdapterevening db1 = new DBAdapterevening(Home.this);
+    DBAdapterevening db1 = new DBAdapterevening(Home.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +88,9 @@ public class Home extends Activity {
         cameraevening = (ImageView) findViewById(R.id.imageViewevening);
         cameraevening.setVisibility(View.GONE);
         tv_morning = (TextView) findViewById(R.id.tvmorning);
+        tv_morning.setVisibility(View.GONE);
         tv_evening = (TextView) findViewById(R.id.textView);
+        tv_evening.setVisibility(View.GONE);
         tvv = (TextView)findViewById(R.id.tvv);
         tvupload = (TextView)findViewById(R.id.uploadingtask);
         userLocalStore = new UserLocalStore(this);
@@ -144,8 +146,8 @@ public class Home extends Activity {
         tvcredit = (TextView) findViewById(R.id.credit_total);
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
-
-
+        spinnermorning = (ProgressBar) findViewById(R.id.progressBarFirstBill);
+        spinnerevening = (ProgressBar) findViewById(R.id.progressBarLastBill);
 
         isInternetPresent = cd.isConnectingToInternet();
 
@@ -370,6 +372,8 @@ public class Home extends Activity {
 
         if(current_dateevening.equals(upload_dateevening)){
             cameraevening.setVisibility(View.GONE);
+            tv_evening.setVisibility(View.VISIBLE);
+            spinnerevening.setVisibility(View.GONE);
             Log.d("campare123evening",current_dateevening);
             Log.d("campare2evening",upload_dateevening);
 
@@ -377,6 +381,8 @@ public class Home extends Activity {
         }
         else{
             cameraevening.setVisibility(View.VISIBLE);
+            spinnerevening.setVisibility(View.GONE);
+            tv_evening.setVisibility(View.GONE);
             Log.d("campareevening",current_dateevening);
             Log.d("campare2evening", upload_dateevening);
         }
@@ -430,6 +436,8 @@ public class Home extends Activity {
 
         if(current_date.equals(upload_date)){
             cameramorning.setVisibility(View.GONE);
+            tv_morning.setVisibility(View.VISIBLE);
+            spinnermorning.setVisibility(View.GONE);
             Log.d("campare123",current_date);
             Log.d("campare2",upload_date);
 
@@ -437,6 +445,8 @@ public class Home extends Activity {
         }
         else{
             cameramorning.setVisibility(View.VISIBLE);
+            spinnermorning.setVisibility(View.GONE);
+            tv_morning.setVisibility(View.GONE);
             Log.d("campare",current_date);
             Log.d("campare2", upload_date);
         }
@@ -776,7 +786,8 @@ public class Home extends Activity {
         }
         protected void onPreExecute() {
             super.onPreExecute();
-            spinner.setVisibility(View.VISIBLE);
+            spinnermorning.setVisibility(View.VISIBLE);
+            cameramorning.setVisibility(View.GONE);
         }
         @Override
         protected Void doInBackground(String... par) {
@@ -799,10 +810,11 @@ public class Home extends Activity {
             if (isInternetPresent) {
                 new ImageUpload().execute();
                 visibilityofbutton();
-                spinner.setVisibility(View.GONE);
+                spinnermorning.setVisibility(View.GONE);
             } else {
                 Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_LONG).show();
-                spinner.setVisibility(View.GONE);
+                spinnermorning.setVisibility(View.GONE);
+                cameramorning.setVisibility(View.VISIBLE);
             }
         }
         private void visibilityofbutton() {
@@ -815,9 +827,11 @@ public class Home extends Activity {
             if (c.moveToFirst()){
                 DisplayContact(c);}
             else{
-                Toast.makeText(getBaseContext(), "Update failed.", Toast.LENGTH_LONG).show();}
+                Toast.makeText(getBaseContext(), "Update failed.", Toast.LENGTH_LONG).show();
+                cameramorning.setVisibility(View.VISIBLE);}
             db.close();
             cameramorning.setVisibility(View.GONE);
+            tv_morning.setVisibility(View.VISIBLE);
         }
     }
 
@@ -889,7 +903,8 @@ public class Home extends Activity {
         }
         protected void onPreExecute() {
             super.onPreExecute();
-            spinner.setVisibility(View.VISIBLE);
+            spinnerevening.setVisibility(View.VISIBLE);
+            cameraevening.setVisibility(View.GONE);
         }
         @Override
         protected Void doInBackground(String... par) {
@@ -912,10 +927,12 @@ public class Home extends Activity {
                 new ImageUpload().execute();
                 //   mProgressDialog.dismiss();
                 visibilityofbuttonevening();
-                spinner.setVisibility(View.GONE);
+                spinnerevening.setVisibility(View.GONE);
+                tv_evening.setVisibility(View.VISIBLE);
             } else {
                 Toast.makeText(getBaseContext(), "Failed.", Toast.LENGTH_LONG).show();
-                spinner.setVisibility(View.GONE);
+                spinnerevening.setVisibility(View.GONE);
+                cameraevening.setVisibility(View.VISIBLE);
             }
         }
 
@@ -930,11 +947,13 @@ public class Home extends Activity {
         db1.open();
         c1 = db1.getContactevening(Integer.parseInt
                 (id));
-        if (c1.moveToFirst())
-            DisplayContactevening(c1);
-        else
+        if (c1.moveToFirst()){
+            DisplayContactevening(c1);}
+        else{
             Toast.makeText(getBaseContext(), "Update failed.",
                     Toast.LENGTH_LONG).show();
+            cameraevening.setVisibility(View.VISIBLE);
+        }
         db1.close();
         cameraevening.setVisibility(View.GONE);
     }
