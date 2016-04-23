@@ -16,7 +16,13 @@ import android.os.Environment;
 import java.util.Date;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,7 +58,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Home extends Activity {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
     UserLocalStore userLocalStore;
     // flag for Internet connection status
     Boolean isInternetPresent = false;
@@ -83,6 +90,9 @@ public class Home extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         cameramorning = (ImageView) findViewById(R.id.morning_button);
         cameramorning.setVisibility(View.GONE);
         cameraevening = (ImageView) findViewById(R.id.imageViewevening);
@@ -490,7 +500,7 @@ public class Home extends Activity {
         Log.d("after evening",imageFileName);
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
-        Log.d("evening after after",imageFileName);
+        Log.d("evening after after", imageFileName);
         String example = mCurrentPhotoPath;
         lime = (example.substring(example.lastIndexOf("/") + 1));
         Log.d("new path new",lime);
@@ -610,6 +620,57 @@ public class Home extends Activity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+           // startActivity(new Intent(Home.this, Payment.class));
+        } else if (id == R.id.second_page) {
+
+        } else if (id == R.id.third_page) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
 
     // Upload Image in Background
