@@ -6,6 +6,8 @@ package com.adurcup.adurcuppublisher.ContentProvider;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import Fragements.Glance;
+
 /**
  * Created by kshivang on 08/04/16.
  */

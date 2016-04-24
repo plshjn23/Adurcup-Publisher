@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import Fragements.Glance;
+
 /**
  * Created by om on 4/22/2016.
  */
