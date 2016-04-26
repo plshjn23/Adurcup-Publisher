@@ -4,6 +4,7 @@ package com.adurcup.adurcuppublisher.Activities;
  * Created by om on 4/17/2016.
  */
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,7 +26,7 @@ import Fragements.Payments;
 import Fragements.Glance;
 
 public class Home extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+               implements NavigationView.OnNavigationItemSelectedListener {
 
     UserLocalStore userLocalStore;
     int backpressed = 0;
@@ -37,7 +38,7 @@ public class Home extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+         setSupportActionBar(toolbar);
 
         userLocalStore = new UserLocalStore(this);
 

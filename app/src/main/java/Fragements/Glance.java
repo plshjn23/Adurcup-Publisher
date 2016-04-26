@@ -71,12 +71,6 @@ import java.util.Map;
  * Created by om on 4/23/2016.
  */
 public class Glance extends Fragment {
-
-
-
-
-
-
     UserLocalStore userLocalStore;
     // flag for Internet connection status
     Boolean isInternetPresent = false;
@@ -111,7 +105,7 @@ public class Glance extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView=inflater.inflate(R.layout.activity_main_glance,container,false);
         getActivity().setTitle("Home");
-
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
         cameramorning = (ImageView)rootView.findViewById(R.id.morning_button);
         cameramorning.setVisibility(View.GONE);
@@ -144,7 +138,7 @@ public class Glance extends Fragment {
                                     if (d != null) {
                                         dt = d.toLocaleString();
                                         Log.d("timestamp", dt);
-                                        String[] splited = dt.split("\\s+");
+                                        String[] splited = dt.split("2016");
 
                                         split_one=splited[0];
 
@@ -233,7 +227,7 @@ public class Glance extends Fragment {
 
             // make sure you close the gps after using it. Save user's battery power
             mGPSService.closeGPS();
-        } else {
+          } else {
             // Internet connection is not present
             // Ask user to connect to Internet
             Toast.makeText(getActivity(), "No Internet Connection.Please Check Your Internet Connection", Toast.LENGTH_LONG).show();
@@ -307,19 +301,6 @@ public class Glance extends Fragment {
             }
 
 
-        });
-
-
-        Button logout = (Button)rootView.findViewById(R.id.buttonlogout);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userLocalStore.clearUserData();
-                userLocalStore.setUserLoggedIn(false);
-                startActivity(new Intent(getActivity(), Login.class));
-
-
-            }
         });
 
 
