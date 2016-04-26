@@ -63,6 +63,10 @@ listView = (ListView)rootView.findViewById(R.id.listView);
     }
 
     public class GetImagesRecycler extends AsyncTask<Void, Void, Void> {
+
+
+
+
         @Override
         protected Void doInBackground(Void... params) {
 

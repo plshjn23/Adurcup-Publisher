@@ -75,7 +75,7 @@
             android:screenOrientation="portrait"
             />
 
-
+<activity android:name=".Activities.FirstLaunch"/>
 
 
 

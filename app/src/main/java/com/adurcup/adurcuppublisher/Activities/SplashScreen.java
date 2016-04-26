@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.adurcup.adurcuppublisher.R;
 
@@ -33,8 +34,8 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         AutoStartActivity(AUTO_HIDE_DELAY_MILLIS);
-    }
 
+    }
     private void AutoStartActivity(int autoHideDelayMillis) {
         mHideHandler.postDelayed(mHideRunnable, autoHideDelayMillis);
     }

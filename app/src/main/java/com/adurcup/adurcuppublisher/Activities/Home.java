@@ -103,6 +103,7 @@ public class Home extends AppCompatActivity
                 public void run() {
                     //Do something after 100ms
                     fm.beginTransaction().replace(R.id.Frame_layout, new Payments()).commit();
+                //    moveTaskToBack (true);
                 }
             }, 300);
 

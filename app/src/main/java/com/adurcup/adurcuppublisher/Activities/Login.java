@@ -51,6 +51,26 @@ public class Login extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+
+
+
+        if (isFirstRun) {
+            //show start activity
+
+            startActivity(new Intent(Login.this, FirstLaunch.class));
+            Toast.makeText(Login.this, "First Run", Toast.LENGTH_LONG)
+                    .show();
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+                    .putBoolean("isFirstRun", false).commit();
+        }
+
+
+
+
         userLocalStore = new UserLocalStore(this);
 
         mobile = (EditText) findViewById(R.id.mobile);

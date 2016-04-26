@@ -1,31 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/approve" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/added_credit" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/type" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/image_src" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/time_stamp" />
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/TypeColorLeft"
+            android:layout_width="4dp"
+            android:layout_height="70dp"
+            android:layout_alignParentLeft="true"
+            android:background="#069" />
+
+        <ImageView
+            android:id="@+id/Thumbnail"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@id/TypeColorLeft"
+            android:src="@drawable/mobile_verified_icon"
+            android:background="@drawable/rounded_corners_status"/>
+
+        <TextView
+            android:id="@+id/time_stamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/Thumbnail"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@id/Thumbnail"
+            android:text="21-Apr-2016 16:39:40"
+            android:textColor="#069"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/time_stamp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_toRightOf="@id/Thumbnail"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text="Location Adress or something like this this hjkhj k kjh kjjkhkj jk he oneo ree four five"
+            android:textSize="10dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/added_credit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Thumbnail"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@id/Thumbnail"
+            android:text="Credits: " />
+
+        <TextView
+            android:id="@+id/added_credit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Thumbnail"
+            android:layout_toRightOf="@id/added_credit_text"
+            android:text="432"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/textView4"
+            android:layout_below="@+id/Address"
+            android:layout_alignRight="@+id/Address"
+            android:layout_alignEnd="@+id/Address" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

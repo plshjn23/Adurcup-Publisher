@@ -104,7 +104,6 @@ public class Glance extends Fragment {
     public static int position;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView=inflater.inflate(R.layout.activity_main_glance,container,false);
-        getActivity().setTitle("Home");
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
         cameramorning = (ImageView)rootView.findViewById(R.id.morning_button);
