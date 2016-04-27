@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class Register extends Activity {
 
-    EditText name, email, password, confirmPassword;
+    EditText name, email, password, confirmPassword,rest_name,rest_address;
     Button btRegister;
     ProgressBar progressBar;
     RequestQueue requestQueue;
@@ -56,6 +56,8 @@ public class Register extends Activity {
         email = (EditText) findViewById(R.id.etEmail);
         confirmPassword = (EditText) findViewById(R.id.confirmPassword);
         password = (EditText) findViewById(R.id.etPassword);
+        rest_name = (EditText) findViewById(R.id.restname);
+        rest_address = (EditText) findViewById(R.id.location);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
 
@@ -157,6 +159,8 @@ public class Register extends Activity {
                     parameters.put("name", name.getText().toString());
                     parameters.put("password", password.getText().toString());
                     parameters.put("contact", mobileNo);
+                    parameters.put("rest_name",rest_name.getText().toString());
+                    parameters.put("address",rest_address.getText().toString());
                     if(email.getText()!=null && email.getText().toString().length() != 0){
                         parameters.put("email", email.getText().toString());
                     }

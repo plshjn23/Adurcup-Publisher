@@ -1,6 +1,7 @@
 package Fragements;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -76,7 +77,7 @@ public class Glance extends Fragment {
     Boolean isInternetPresent = false;
     // Connection detector class
     ConnectionDetector cd;
-    ImageView imgView, cameramorning, cameraevening;
+    ImageView imgView, cameramorning, cameraevening,tbtn;
     static final int REQUEST_TAKE_PHOTO = 1;
     double latitude, longitude;
     TextView tvupload, tvv, tvcredit, tv, tv_morning, tv_evening;
@@ -86,6 +87,7 @@ public class Glance extends Fragment {
     String gma,lime,imageFileName,typ="3",dt,new_lat,new_long,split_one,id = "1",upload_date,current_date,upload_dateevening,current_dateevening,mCurrentPhotoPath, address_loc = "null";
     RequestQueue requestQueue;
     Cursor c,c1;
+    private ProgressDialog mProgressDialog;
     int new_button = 0;
     static String Imagecredit = "http://api.adurcup.com/publisher/me/credits";
     static String Imageuploadurl = "http://api.adurcup.com/publisher/me/images";
@@ -106,7 +108,9 @@ public class Glance extends Fragment {
         final View rootView=inflater.inflate(R.layout.activity_main_glance,container,false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
+        final DrawerLayout drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer_layout);
         cameramorning = (ImageView)rootView.findViewById(R.id.morning_button);
+        tbtn = (ImageView)rootView.findViewById(R.id.togglebtn);
         cameramorning.setVisibility(View.GONE);
         cameraevening = (ImageView)rootView.findViewById(R.id.imageViewevening);
         cameraevening.setVisibility(View.GONE);
@@ -240,7 +244,7 @@ public class Glance extends Fragment {
 
                 if (address_loc != "null") {
                     photo_bill = 3;
-                    typ="1";
+                    typ = "1";
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     // Ensure that there's a camera activity to handle the intent
                     if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -261,6 +265,16 @@ public class Glance extends Fragment {
                     Toast.makeText(getActivity(), "Unable to get your location because of internet issue.", Toast.LENGTH_LONG).show();
                 }
 
+
+            }
+
+
+        });
+
+        tbtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                drawer.openDrawer(GravityCompat.START);
 
             }
 
@@ -355,7 +369,7 @@ public class Glance extends Fragment {
             //---Insert Contact---
             String date1 = "0";
             db1.open();
-            db1.insertContactevening(date1,split_one);
+            db1.insertContactevening(date1, split_one);
             db1.close();
             Toast.makeText(getActivity(), "Inserted",
                     Toast.LENGTH_SHORT).show();
@@ -631,25 +645,34 @@ public class Glance extends Fragment {
 
     // Upload Image in Background
     public class UploadAsync extends AsyncTask<String, Void, Void> {
-
         public UploadAsync(Glance activity) {
 
         }
 
 
-        protected void onPreExecute() {
 
+        protected void onPreExecute() {
+            showProgressBar();
             super.onPreExecute();
 
+
+
+
+
+        }
+
+        private void showProgressBar() {
+
+            mProgressDialog = ProgressDialog.show(getActivity(), "Please Wait","Uploading Image ...");
             spinner.setVisibility(View.VISIBLE);
-
-
         }
 
 
         @Override
 
         protected Void doInBackground(String... par) {
+
+
 
 
             // *** Upload all file to Server
@@ -686,12 +709,24 @@ public class Glance extends Fragment {
 
             // check for Internet status
             if (isInternetPresent) {
-                spinner.setVisibility(View.GONE);
+
+
                 new ImageUpload().execute();
+
+                spinner.setVisibility(View.GONE);
+                mProgressDialog.dismiss();
+
             } else {
+
                 Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
                 spinner.setVisibility(View.GONE);
+                mProgressDialog.dismiss();
             }
+        }
+
+        private void hideProgrssbar() {
+
+
         }
     }
 
@@ -802,10 +837,17 @@ public class Glance extends Fragment {
         public UploadAsyncmorning(Glance activity) {
         }
         protected void onPreExecute() {
+            showprogressbarmorning();
             super.onPreExecute();
+
+        }
+
+        private void showprogressbarmorning() {
+            mProgressDialog = ProgressDialog.show(getActivity(), "Please Wait","Uploading Image ...");
             spinnermorning.setVisibility(View.VISIBLE);
             cameramorning.setVisibility(View.GONE);
         }
+
         @Override
         protected Void doInBackground(String... par) {
             // *** Upload all file to Server
@@ -827,13 +869,21 @@ public class Glance extends Fragment {
             if (isInternetPresent) {
                 new ImageUpload().execute();
                 visibilityofbutton();
-                spinnermorning.setVisibility(View.GONE);
+                hideprogressbarmorning();
+
             } else {
                 Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
                 spinnermorning.setVisibility(View.GONE);
+                mProgressDialog.dismiss();
                 cameramorning.setVisibility(View.VISIBLE);
             }
         }
+
+        private void hideprogressbarmorning() {
+            mProgressDialog.dismiss();
+            spinnermorning.setVisibility(View.GONE);
+        }
+
         private void visibilityofbutton() {
             DBAdapter db = new DBAdapter(getActivity());
             db.open();
@@ -852,6 +902,8 @@ public class Glance extends Fragment {
             tv_morning.setVisibility(View.VISIBLE);
         }
     }
+
+
 
     public static boolean uploadFiletoServermorning(String strSDPath, String strUrlServer) {
         int bytesRead, bytesAvailable, bufferSize;
@@ -920,10 +972,17 @@ public class Glance extends Fragment {
         public UploadAsyncevening(Glance activity) {
         }
         protected void onPreExecute() {
+            showprogressbarevening();
             super.onPreExecute();
+
+        }
+
+        private void showprogressbarevening() {
+            mProgressDialog = ProgressDialog.show(getActivity(), "Please Wait","Uploading Image ...");
             spinnerevening.setVisibility(View.VISIBLE);
             cameraevening.setVisibility(View.GONE);
         }
+
         @Override
         protected Void doInBackground(String... par) {
             // *** Upload all file to Server
@@ -945,15 +1004,21 @@ public class Glance extends Fragment {
                 new ImageUpload().execute();
                 //   mProgressDialog.dismiss();
                 visibilityofbuttonevening();
-                spinnerevening.setVisibility(View.GONE);
-                tv_evening.setVisibility(View.VISIBLE);
+                hideprogressbarevening();
+
             } else {
                 Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
+                mProgressDialog.dismiss();
                 spinnerevening.setVisibility(View.GONE);
                 cameraevening.setVisibility(View.VISIBLE);
             }
         }
 
+        private void hideprogressbarevening() {
+            mProgressDialog.dismiss();
+            spinnerevening.setVisibility(View.GONE);
+            tv_evening.setVisibility(View.VISIBLE);
+        }
 
 
     }

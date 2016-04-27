@@ -7,7 +7,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout2">
 
         <TextView
             android:id="@+id/TypeColorLeft"
@@ -23,7 +24,7 @@
             android:layout_marginLeft="4dp"
             android:layout_toRightOf="@id/TypeColorLeft"
             android:src="@drawable/mobile_verified_icon"
-            android:background="@drawable/rounded_corners_status"/>
+            />
 
         <TextView
             android:id="@+id/time_stamp"

@@ -13,6 +13,9 @@ public class ParseJSON  {
     public static String[] types;
     public static String[] image_srcs;
     public static String[] time_stamps;
+    public static String[] locations;
+    public static String[] latitudes;
+    public static String[] longitudes;
 
     public static final String JSON_ARRAY = "images";
     public static final String KEY_APPROVE = "approve";
@@ -20,6 +23,9 @@ public class ParseJSON  {
     public static final String KEY_TYPE = "type";
     public static final String KEY_IMAGE_SRC = "image_src";
     public static final String KEY_TIME_STAMP = "time_stamp";
+    public static final String KEY_LOCATION = "location";
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_LONGITUDE = "longitude";
 
     private JSONArray users = null;
 
@@ -40,6 +46,9 @@ public class ParseJSON  {
             types = new String[users.length()];
             image_srcs = new String[users.length()];
             time_stamps = new String[users.length()];
+            locations = new String[users.length()];
+            latitudes = new String[users.length()];
+            longitudes = new String[users.length()];
 
             for(int i=0;i<users.length();i++){
                 JSONObject jo = users.getJSONObject(i);
@@ -48,6 +57,10 @@ public class ParseJSON  {
                 types[i] = jo.getString(KEY_TYPE);
                 image_srcs[i] = jo.getString(KEY_IMAGE_SRC);
                 time_stamps[i] = jo.getString(KEY_TIME_STAMP);
+                locations[i] = jo.getString(KEY_LOCATION);
+                latitudes[i] = jo.getString(KEY_LATITUDE);
+                longitudes[i] = jo.getString(KEY_LONGITUDE);
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

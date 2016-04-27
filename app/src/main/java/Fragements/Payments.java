@@ -44,7 +44,7 @@ public class Payments extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_payments, container, false);
         getActivity().setTitle("Payments");
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         userLocalStore = new UserLocalStore(getActivity());
         User user = userLocalStore.getLoggedInUser();
 
@@ -118,7 +118,7 @@ listView = (ListView)rootView.findViewById(R.id.listView);
     private void showJSON(String json) {
         ParseJSON pj = new ParseJSON(json);
         pj.parseJSON();
-        CustomList cl = new CustomList(getActivity(), ParseJSON.approves,ParseJSON.added_credits,ParseJSON.types,ParseJSON.image_srcs,ParseJSON.time_stamps);
+        CustomList cl = new CustomList(getActivity(), ParseJSON.approves,ParseJSON.added_credits,ParseJSON.types,ParseJSON.image_srcs,ParseJSON.time_stamps,ParseJSON.locations,ParseJSON.latitudes,ParseJSON.longitudes);
         listView.setAdapter(cl);
     }
 }
