@@ -4,20 +4,23 @@ package com.adurcup.adurcuppublisher.Activities;
  * Created by om on 4/17/2016.
  */
 
-import android.app.Activity;
+
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceActivity;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.HeaderViewListAdapter;
+import android.widget.TextView;
 import com.adurcup.adurcuppublisher.ContentProvider.User;
 import com.adurcup.adurcuppublisher.ContentProvider.UserLocalStore;
 import com.adurcup.adurcuppublisher.R;
@@ -41,8 +44,16 @@ public class Home extends AppCompatActivity
          setSupportActionBar(toolbar);
 
         userLocalStore = new UserLocalStore(this);
+        User user = userLocalStore.getLoggedInUser();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
+
+
+
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -50,7 +61,6 @@ public class Home extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         fm.beginTransaction().replace(R.id.Frame_layout, new Glance()).commit();
     }
 
@@ -108,7 +118,38 @@ public class Home extends AppCompatActivity
             }, 300);
 
 
-        } else if (id == R.id.nav_logout) {
+        }
+
+
+        else if (id == R.id.nav_Help) {
+            hand.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Do something after 100ms
+                    fm.beginTransaction().replace(R.id.Frame_layout, new Help()).commit();
+                    //    moveTaskToBack (true);
+                }
+            }, 300);
+
+
+        }
+
+
+        else if (id == R.id.nav_Feedback) {
+            hand.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Do something after 100ms
+                    fm.beginTransaction().replace(R.id.Frame_layout, new FeedBack()).commit();
+                    //    moveTaskToBack (true);
+                }
+            }, 300);
+
+
+        }
+
+
+        else if (id == R.id.nav_logout) {
 
             userLocalStore.clearUserData();
             userLocalStore.setUserLoggedIn(false);

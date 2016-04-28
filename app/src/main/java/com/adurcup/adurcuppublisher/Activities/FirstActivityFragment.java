@@ -1,6 +1,7 @@
 package com.adurcup.adurcuppublisher.Activities;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ public class FirstActivityFragment extends Fragment {
     private ViewPager _mViewPager;
     private ImageViewPagerAdapter _adapter;
     private ImageView _btn1, _btn2, _btn3;
+    Button _btn4;
     public FirstActivityFragment() {
     }
 
@@ -59,6 +61,13 @@ public class FirstActivityFragment extends Fragment {
             public void onClick(View v) {
                 _btn3.setImageResource(R.drawable.fill_circle);
                 _mViewPager.setCurrentItem(2);
+            }
+        });
+        _btn4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Login.class);
+                startActivity(intent);
             }
         });
     }
@@ -117,6 +126,7 @@ public class FirstActivityFragment extends Fragment {
         _btn1 = (ImageView) getView().findViewById(R.id.btn1);
         _btn1.setImageResource(R.drawable.fill_circle);
         _btn2 = (ImageView) getView().findViewById(R.id.btn2);
+        _btn4 = (Button) getView().findViewById(R.id.btnNewUserPopup);
         _btn3 = (ImageView) getView().findViewById(R.id.btn3);
 
     }

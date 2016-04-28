@@ -48,7 +48,7 @@ public class Payments extends Fragment {
         userLocalStore = new UserLocalStore(getActivity());
         User user = userLocalStore.getLoggedInUser();
 
-listView = (ListView)rootView.findViewById(R.id.listView);
+          listView = (ListView)rootView.findViewById(R.id.listView);
             // Internet Connection is Present
             // make HTTP requests
             new GetImagesRecycler().execute();
