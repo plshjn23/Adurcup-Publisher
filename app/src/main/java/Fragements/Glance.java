@@ -1,5 +1,7 @@
 package Fragements;
 
+
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -213,7 +215,7 @@ public class Glance extends Fragment {
             if (mGPSService.isLocationAvailable == false) {
                 // Here you can ask the user to try again, using return; for that
                 Toast.makeText(getActivity(), "Your location is not available, please try again.", Toast.LENGTH_SHORT).show();
-               // return;
+                // return;
                 // Or you can continue without getting the location, remove the return; above and uncomment the line given below
                 // address = "Location not available";
             } else {
@@ -230,7 +232,7 @@ public class Glance extends Fragment {
 
             // make sure you close the gps after using it. Save user's battery power
             mGPSService.closeGPS();
-          } else {
+        } else {
             // Internet connection is not present
             // Ask user to connect to Internet
             Toast.makeText(getActivity(), "No Internet Connection.Please Check Your Internet Connection", Toast.LENGTH_LONG).show();
