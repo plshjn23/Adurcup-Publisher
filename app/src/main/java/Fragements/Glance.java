@@ -14,30 +14,22 @@ import com.adurcup.adurcuppublisher.Activities.ConnectionDetector;
 import com.adurcup.adurcuppublisher.Activities.DBAdapter;
 import com.adurcup.adurcuppublisher.Activities.DBAdapterevening;
 import com.adurcup.adurcuppublisher.Activities.GPSService;
-import com.adurcup.adurcuppublisher.Activities.Login;
 import com.adurcup.adurcuppublisher.R;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
 import java.util.Date;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -52,7 +44,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.adurcup.adurcuppublisher.ContentProvider.User;
 import com.adurcup.adurcuppublisher.ContentProvider.UserLocalStore;
-import com.adurcup.adurcuppublisher.R;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -366,7 +357,7 @@ public class Glance extends Fragment {
         }
         else {
             Toast.makeText(getActivity(), "No contact found",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG);
 
             //---Insert Contact---
             String date1 = "0";
@@ -374,7 +365,7 @@ public class Glance extends Fragment {
             db1.insertContactevening(date1, split_one);
             db1.close();
             Toast.makeText(getActivity(), "Inserted",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT);
             Log.d("update date evening", date1);
             Log.d("current date evening", split_one);
 
@@ -386,10 +377,10 @@ public class Glance extends Fragment {
         if (db1.updateContactevening
                 (Integer.parseInt(id), split_one)){
 
-            Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG).show();}
+            Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG);}
         else{
             Toast.makeText(getActivity(), "Update failed.",
-                    Toast.LENGTH_LONG).show();}
+                    Toast.LENGTH_LONG);}
         db1.close();
 
 
@@ -430,7 +421,7 @@ public class Glance extends Fragment {
         }
         else {
             Toast.makeText(getActivity(), "No contact found",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG);
 
             //---Insert Contact---
             String date = "0";
@@ -438,7 +429,7 @@ public class Glance extends Fragment {
             db.insertContact(date,split_one);
             db.close();
             Toast.makeText(getActivity(), "Inserted",
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT);
             Log.d("update time", date);
             Log.d("current date", split_one);
 
@@ -450,10 +441,10 @@ public class Glance extends Fragment {
         if (db.updateContact
                 (Integer.parseInt(id), split_one)){
 
-            Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG).show();}
+            Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG);}
         else{
             Toast.makeText(getActivity(), "Update failed.",
-                    Toast.LENGTH_LONG).show();}
+                    Toast.LENGTH_LONG);}
         db.close();
 
 
@@ -489,7 +480,7 @@ public class Glance extends Fragment {
         Toast.makeText(getActivity(), "id: " + c.getString(0) +
                         "\n" +"Uploading Date: " + c.getString(1) + "\n" +
                         "Current Date: " + c.getString(2),
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_LONG);
         upload_date = c.getString(1);
         current_date = c.getString(2);
         Log.d("upload",upload_date);
@@ -891,13 +882,13 @@ public class Glance extends Fragment {
             db.open();
             if (db.updateContact1
                     (Integer.parseInt(id), split_one))
-                Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG);
             db.open();
             c = db.getContact(Integer.parseInt(id));
             if (c.moveToFirst()){
                 DisplayContact(c);}
             else{
-                Toast.makeText(getActivity(), "Update failed.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Update failed.", Toast.LENGTH_LONG);
                 cameramorning.setVisibility(View.VISIBLE);}
             db.close();
             cameramorning.setVisibility(View.GONE);
@@ -1029,7 +1020,7 @@ public class Glance extends Fragment {
         DBAdapterevening db1 = new DBAdapterevening(getActivity());
         db1.open();
         if (db1.updateContact1evening(Integer.parseInt(id), split_one))
-            Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Update successful.", Toast.LENGTH_LONG);
         db1.open();
         c1 = db1.getContactevening(Integer.parseInt
                 (id));
@@ -1037,7 +1028,7 @@ public class Glance extends Fragment {
             DisplayContactevening(c1);}
         else{
             Toast.makeText(getActivity(), "Update failed.",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG);
             cameraevening.setVisibility(View.VISIBLE);
         }
         db1.close();
@@ -1045,7 +1036,7 @@ public class Glance extends Fragment {
     }
 
     private void DisplayContactevening(Cursor c1) {
-        Toast.makeText(getActivity(), "id: " + c1.getString(0) + "\n" +"Uploading Date Evening: " + c1.getString(1) + "\n" + "Current Date evening: " + c1.getString(2), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "id: " + c1.getString(0) + "\n" +"Uploading Date Evening: " + c1.getString(1) + "\n" + "Current Date evening: " + c1.getString(2), Toast.LENGTH_LONG);
         upload_dateevening = c1.getString(1);
         current_dateevening = c1.getString(2);
         Log.d("upload_evening",upload_date);

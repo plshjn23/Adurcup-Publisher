@@ -21,19 +21,18 @@ public class SplashScreen extends Activity {
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     private CoordinatorLayout coordinatorLayout;
     Boolean isInternetPresent = false;
+    ConnectionDetector cd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
-                .coordinatorLayout);
-
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        cd = new ConnectionDetector(SplashScreen.this);
         // Connection detector class
 
-        ConnectionDetector cd;
-        cd = new ConnectionDetector(SplashScreen.this);
         isInternetPresent = cd.isConnectingToInternet();
         if (isInternetPresent) {
             // Internet Connection is Present
@@ -44,41 +43,29 @@ public class SplashScreen extends Activity {
                 }
             }, 2000);
 
+
         } else {
             // Internet connection is not present
             // Ask user to connect to Internet
+
+
             Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, "Internet is not connected!", Snackbar.LENGTH_LONG)
-                    .setAction("RETRY", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+                    .make(coordinatorLayout, "Internet is not connected!", Snackbar.LENGTH_INDEFINITE);
+            {
 
-                            if (isInternetPresent) {
-                                // Internet Connection is Present
-                                // make HTTP requests
-                                startActivity(new Intent(SplashScreen.this, Login.class));
+                snackbar.setActionTextColor(Color.RED);
+                snackbar.show();
 
-                            } else {
-                                Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "No internet Connection", Snackbar.LENGTH_SHORT);
-                                snackbar1.show();
-                            }
-
-                        }
-
-                    });
-            snackbar.setActionTextColor(Color.RED);
-            snackbar.show();
+            }
+            }
         }
-
-
-
-
 
     }
 
 
 
-}
+
+
 
 
 
