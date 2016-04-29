@@ -1,6 +1,7 @@
 package Fragements;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +41,7 @@ public class Payments extends Fragment {
     RequestQueue requestQueue;
     String gma;
     private ListView listView;
+    private ProgressDialog mProgressDialog;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_payments, container, false);
@@ -65,6 +67,27 @@ public class Payments extends Fragment {
     public class GetImagesRecycler extends AsyncTask<Void, Void, Void> {
 
 
+        public GetImagesRecycler() {
+
+        }
+
+
+
+        protected void onPreExecute() {
+            showProgressBar();
+            super.onPreExecute();
+
+
+
+
+
+        }
+
+        private void showProgressBar() {
+
+            mProgressDialog = ProgressDialog.show(getActivity(), "Please Wait", "Fetching Data ...");
+
+        }
 
 
         @Override
@@ -112,6 +135,8 @@ public class Payments extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            mProgressDialog.dismiss();
         }
     }
 

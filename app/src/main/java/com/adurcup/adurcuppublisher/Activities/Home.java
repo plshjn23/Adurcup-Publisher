@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.HeaderViewListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.adurcup.adurcuppublisher.ContentProvider.User;
 import com.adurcup.adurcuppublisher.ContentProvider.UserLocalStore;
 import com.adurcup.adurcuppublisher.R;
@@ -64,14 +66,15 @@ public class Home extends AppCompatActivity
         fm.beginTransaction().replace(R.id.Frame_layout, new Glance()).commit();
     }
 
+    private Boolean exit = false;
     @Override
     public void onBackPressed() {
-        if (backpressed == 0) {
-            fm.beginTransaction().replace(R.id.Frame_layout, new Glance()).commit();
-            backpressed = 1;
-        } else if (backpressed == 1) {
-            super.onBackPressed();
-        }
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+
     }
 
 
